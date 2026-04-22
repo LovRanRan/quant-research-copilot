@@ -11,13 +11,13 @@
 | Field | Value |
 |-------|-------|
 | **Current Stage** | `Stage 1 · Scaffolding + DESIGN.md v0` |
-| **Current Sub-step** | `1.2.b — mcp-fred-macro skeleton (server.py pending, hand-write)` |
-| **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩⬜⬜⬜⬜ 6 / 10 micro-steps |
+| **Current Sub-step** | `1.2.c — mcp-backtest skeleton` |
+| **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 7 / 10 micro-steps |
 | **Overall Progress** | 🟦⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0 / 13 stages |
 | **Blocker** | none |
-| **Last Activity** | 2026-04-22 · 1.2.b scaffolding 99% done. Structure parity with sec-edgar (diff clean). Stray `mcp-servers/src/` tree cleaned up. Only `server.py` + `tests/test_smoke.py` content remaining. |
+| **Last Activity** | 2026-04-22 · 1.2.b **DONE**. `mcp-fred-macro` server.py hand-written (ping stub), `__init__.py` re-export, smoke check passes — `FastMCP('mcp-fred-macro')` instance verified. Fixed editable-install corruption via `uv sync --reinstall-package`. |
 | **Working Mode** | HAND-WRITE (Claude coaches, user writes all runnable code) |
-| **Next Action** | User writes `mcp-fred-macro/src/mcp_fred_macro/server.py` from design spec (hand-write). |
+| **Next Action** | Scaffold `mcp-servers/mcp-backtest/` — same shape as fred-macro, user runs it mostly unaided. |
 
 ---
 
@@ -287,9 +287,10 @@ mcp-sec-edgar/
 | 2026-04-22 | 1.2.a | ✅ `mcp-sec-edgar/` skeleton complete (13 files, 5 sub-packages). uv auto-added `[tool.uv.workspace]` to parent pyproject.toml; kept per ADR-003. |
 | 2026-04-22 | 1.2.b | ⚠ Cleanup: stray `mcp-servers/src/mcp_fred_macro/{cache,registries,resources,tools}/` created by wrong-CWD `mkdir` — removed via `rmdir` bottom-up. Glob miss (empty dirs invisible to Glob) logged as a lesson. |
 | 2026-04-22 | 1.2.b | ✅ `mcp-fred-macro/` skeleton re-created at correct path. `diff` against sec-edgar file list shows only package-name swap. Boilerplate files done: `.env.example` (7 lines), `LICENSE` (copied from sec-edgar, identical), `.github/workflows/ci.yml` (29 lines, standalone-repo style, identical for both packages). Remaining: `server.py` + `tests/test_smoke.py` (hand-write). |
+| 2026-04-22 | 1.2.b | ✅ **DONE**. `server.py` hand-written (docstring + `FastMCP(name=...)` + `@mcp.tool def ping() -> dict[str, str]` returning `{"status": "ok", "server": mcp.name}` + `main()` + entrypoint guard). `__init__.py` re-exports `main`. `uv add fastmcp` → fastmcp 3.2.4. Smoke check ✅ (`FastMCP('mcp-fred-macro')` instance printed). Lesson learned: editable install can get half-broken after `uv add` — recover via `uv sync --reinstall-package`. |
 
 ---
 
 ## 🎯 下一步（由 Claude 给 → Haichuan 执行 → 回来报完成）
 
-**Next micro-step: 1.2.b (tail)** — Haichuan hand-writes `mcp-fred-macro/src/mcp_fred_macro/server.py` from design spec. Claude provides only: (a) FastMCP API primer, (b) what the stub must expose, (c) pointer to sec-edgar's `server.py` as a reference pattern. No code given.
+**Next micro-step: 1.2.c** — scaffold `mcp-servers/mcp-backtest/` with the same shape as fred-macro. Differences: registries will hold a `Strategy` Protocol (not a `ResamplePolicy`); cache will be yfinance Parquet (not SEC SQLite or FRED Parquet). For 1.2.c itself, just do the skeleton — real strategy/backtest logic is Stage 4.

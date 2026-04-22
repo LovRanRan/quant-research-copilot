@@ -1,0 +1,17 @@
+[project]
+name = "mcp-sec-edgar"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "LovRanRan", email = "13812764054zhc@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+mcp-sec-edgar = "mcp_sec_edgar:main"
+
+[build-system]
+requires = ["uv_build>=0.11.7,<0.12.0"]
+build-backend = "uv_build"

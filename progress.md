@@ -11,13 +11,13 @@
 | Field | Value |
 |-------|-------|
 | **Current Stage** | `Stage 1 · Scaffolding + DESIGN.md v0` |
-| **Current Sub-step** | `1.3 — DESIGN.md v0.1 draft (Claude drafts, Haichuan fills key fields)` |
-| **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩🟩🟩🟩⬜ 9 / 10 micro-steps |
-| **Overall Progress** | 🟦⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0 / 13 stages |
-| **Blocker** | none |
-| **Last Activity** | 2026-04-22 · **Stage 1.2 closed**. All 3 MCP skeletons at parity — `FastMCP('mcp-sec-edgar')` / `FastMCP('mcp-fred-macro')` / `FastMCP('mcp-backtest')` all smoke-check green. Three subpackage trees, uv workspace aligned, LICENSE/CI/boilerplate identical across all. |
-| **Working Mode** | HAND-WRITE (Claude drafts DESIGN.md; Haichuan fills AgentState schema and tool signatures) |
-| **Next Action** | Claude proposes DESIGN.md v0.1 outline → Haichuan approves/edits scope → Claude drafts → Haichuan fills key fields + reviews. |
+| **Current Sub-step** | `1.3 — DESIGN.md v0.1 FILL IN pass (in progress · 1 / 7 TypedDicts done)` |
+| **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 10 / 10 micro-steps (Claude draft portion) |
+| **Overall Progress** | 🟦🟦⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 1 / 13 stages (Stage 1 pending FILL IN completion) |
+| **Blocker** | none — user paused mid-FILL-IN, will resume in a new chat |
+| **Last Activity** | 2026-04-22 · FILL IN pass kicked off. Haichuan reviewed DESIGN.md v0.1 and chose Path B (fill in now). Claude gave `Constituent` worked example; user copied verbatim into Section 5.1 — ✅ 🟢. Module-level-vs-function-level TypedDict placement rule established (always module-level). |
+| **Working Mode** | HAND-WRITE (review + fill in) |
+| **Next Action** | Resume in new chat. Next hand-write target: `FilingMeta` TypedDict (first true hand-write of Section 5). See "Next micro-step" at bottom for the full pickup checklist. |
 
 ---
 
@@ -301,9 +301,37 @@ mcp-sec-edgar/
 | 2026-04-22 | 1.2.c | ✅ **DONE**. `mcp-backtest` scaffolded end-to-end: `uv init --package`, 4 subpackage dirs (no middleware — yfinance needs no rate-limit), LICENSE + CI copied from fred-macro (identical templates), `.env.example` commented-only (no required secrets), `server.py` + `__init__.py` written in same five-section shape as fred-macro. `uv add fastmcp` + smoke check ✅ `FastMCP('mcp-backtest')`. Workspace `members` now lists all 3 MCPs. |
 | 2026-04-22 | 1.2.a (parity) | ✅ **DONE**. `mcp-sec-edgar/server.py` + `__init__.py` rewritten to same ping-stub shape as fred-macro/backtest. Smoke check ✅ `FastMCP('mcp-sec-edgar')`. |
 | 2026-04-22 | 1.2 (final) | ⚠→✅ Triple-import test from workspace root initially failed (`ModuleNotFoundError`). Root cause: root project didn't declare MCPs as deps, so `uv sync` at root skipped them. Fix: ADR-004 — add 3 MCPs as `dependencies` + `[tool.uv.sources]` with `workspace = true`. After `uv sync`, triple import ✅ all three `main` functions printed. **Stage 1.2 fully closed.** |
+| 2026-04-22 | 1.3 | ✅ **DESIGN.md v0.1 drafted** — Medium scope (7 sections + 2 appendices). Structure: Goals/Non-goals → Architecture (Mermaid) → AgentState (FILL IN) → Node contracts → Tool signatures (FILL IN) → Routing rules → Baseline metrics. Deferred to v1.0 per plan: Failure Modes + Open Questions. Version history + evolution plan built into doc. |
+| 2026-04-22 | 1.3 | ✅ Haichuan finished reading DESIGN.md v0.1. Chose Path B (FILL IN now, before moving to Stage 2). Scope confirmed: 7 TypedDicts in Section 5 + AgentState concrete types in Section 3. |
+| 2026-04-22 | 1.3 | ✅ **Constituent TypedDict added** to Section 5.1. Fields: `ticker: str / name: str / sector: str / weight: Optional[float]`. `weight` is Optional because S&P 500 publishes weights but Russell 1000 may not — future-proofing the IndexRegistry. This was a worked example from Claude, copied verbatim; pattern-calibration, not a true hand-write. |
+| 2026-04-22 | 1.3 | 📘 **Lesson established · TypedDict placement**. Rule: TypedDicts always written at module top-level (not inside functions). Reasons: (1) reusable across tools/resources/tests, (2) only module-top types are visible to Pyright/mypy, (3) class definitions belong to a module's static skeleton. Section 5.1 currently follows this pattern — keep it consistent across all 3 MCP sections. |
+| 2026-04-22 | 1.3 | ⏸ **Session paused.** User continuing in a new chat. |
 
 ---
 
-## 🎯 下一步（由 Claude 给 → Haichuan 执行 → 回来报完成）
+## 🎯 Next micro-step — pickup checklist for the new chat
 
-**Next micro-step: 1.3** — DESIGN.md v0.1 draft. Claude proposes an outline first (sections + purpose of each), Haichuan confirms/edits scope, then Claude drafts. Haichuan hand-writes: (a) `AgentState` TypedDict fields, (b) tool signatures for the 3 self-authored MCPs. Claude drafts everything else.
+**Where we left off:** Section 5.1 of `DESIGN.md` has `Constituent` fully defined (as a module-level TypedDict). This was a worked example. The real hand-write work starts with `FilingMeta`.
+
+**Immediate checklist (in order):**
+
+1. **Clean up the stale `# FILL IN:` comment** under `get_index_constituents` (line ~247 of DESIGN.md). The `# FILL IN: Constituent = TypedDict(...)` line is now redundant because the class is defined above. Keep the `# Example call:` and `# form_type ∈ {...}` comments — they're documentation, not FILL IN markers.
+
+2. **Hand-write `FilingMeta`** (Section 5.1, above `search_filings`). First true hand-write of the FILL IN pass. Four-step process:
+   - Q: what does a consumer of `search_filings` need to do with each filing? (view, cite, filter, fetch sections)
+   - Candidate fields + 1-sentence reasoning each
+   - Write the TypedDict (module-level, like `Constituent`)
+   - Annotate trade-offs: `Optional` where? `Literal` where?
+   - Hint pool (covered in the final pre-pause message): `accession_number`, `filed_date: date`, `form: str` vs `Literal[...]`, consider adding `cik` / `company_name` / `period_of_report`.
+
+3. **Hand-write the section enum** for `get_filing_section`. Candidates listed in existing comment: `item_1_business, item_1a_risk, item_7_mdna, item_8_financials`. Decide: `str` (flexible) vs `Literal[...]` (strict). Probably a top-level `FilingSection = Literal[...]` alias.
+
+4. **Move to Section 5.2 mcp-fred-macro:** hand-write `SeriesMeta` TypedDict, decide return type for `get_series` (list-of-tuples vs DataFrame — remember: JSON-safe matters for MCP stdio), `align_series` freq enum + `ResamplePolicy` policy values.
+
+5. **Move to Section 5.3 mcp-backtest:** hand-write `BacktestResult` (richest of all — `run_id / sharpe / max_dd / cagr / yearly_pnl: List[float]` at minimum).
+
+6. **Fill in Section 3 AgentState concrete types:** replace the three `Optional[Dict[str, Any]]` placeholders with concrete TypedDicts now that MCP return types are defined (e.g. `backtest_result: Optional[BacktestResult]`).
+
+7. **Close Stage 1** — commit DESIGN.md + progress.md, move to Stage 2 (mcp-sec-edgar real implementation).
+
+**For Claude (new chat):** User is in HAND-WRITE mode. Do not write TypedDicts for them — they already got one worked example (`Constituent`). Review their `FilingMeta` with 🟢 / 🟡 / 🔴, give direction only. 🔴 (minimal code fix) only if they're stuck >15 min and describe the block precisely.

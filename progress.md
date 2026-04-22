@@ -11,13 +11,13 @@
 | Field | Value |
 |-------|-------|
 | **Current Stage** | `Stage 1 · Scaffolding + DESIGN.md v0` |
-| **Current Sub-step** | `1.1.c — .gitignore + .env.example` / `1.1.d — git init + GitHub push` |
-| **Stage 1 Progress** | 🟩🟩🟧⬜⬜⬜⬜⬜⬜⬜ 2 / 10 micro-steps |
+| **Current Sub-step** | `1.2.b — mcp-fred-macro skeleton (server.py pending, hand-write)` |
+| **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩⬜⬜⬜⬜ 6 / 10 micro-steps |
 | **Overall Progress** | 🟦⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0 / 13 stages |
 | **Blocker** | none |
-| **Last Activity** | 2026-04-22 · 1.1.b 完成（Option B · 标准 src-layout，import 路径 `quant_research_copilot.*`） |
-| **Working Mode** | HAND-WRITE（Claude coaches, user writes all runnable code） |
-| **Next Action** | 写 `.gitignore` + `.env.example` → `git init` → 建 GitHub repo → 首次 push |
+| **Last Activity** | 2026-04-22 · 1.2.b scaffolding 99% done. Structure parity with sec-edgar (diff clean). Stray `mcp-servers/src/` tree cleaned up. Only `server.py` + `tests/test_smoke.py` content remaining. |
+| **Working Mode** | HAND-WRITE (Claude coaches, user writes all runnable code) |
+| **Next Action** | User writes `mcp-fred-macro/src/mcp_fred_macro/server.py` from design spec (hand-write). |
 
 ---
 
@@ -27,12 +27,12 @@
 - [ ] 1.1 主 repo 骨架（`projects/quant-research-copilot/`）
   - [x] 1.1.a `uv init --package` + 顶层目录（src/ eval/ tests/ configs/ scripts/ mcp-servers/）✅ 2026-04-22
   - [x] 1.1.b Option B · 标准 src-layout，所有 `__init__.py` 就位 ✅ 2026-04-22
-  - [ ] 1.1.c 根目录配置文件（`.gitignore` 扩充 + `.env.example`）
-  - [ ] 1.1.d `git init` + GitHub repo 创建 + 首次 push
-- [ ] 1.2 mcp-servers/ 子目录 + 3 个独立 MCP repo 骨架
-  - [ ] 1.2.a `mcp-servers/mcp-sec-edgar/`（uv init + 子模块 + tests + CI yml + LICENSE + README）
-  - [ ] 1.2.b `mcp-servers/mcp-fred-macro/`（同构）
-  - [ ] 1.2.c `mcp-servers/mcp-backtest/`（同构）
+  - [x] 1.1.c `.gitignore` + `.env.example` ✅ 2026-04-22
+  - [x] 1.1.d `git init` + GitHub public repo + first push ✅ 2026-04-22
+- [ ] 1.2 mcp-servers/ subdirs + 3 MCP skeletons
+  - [x] 1.2.a `mcp-servers/mcp-sec-edgar/` ✅ 2026-04-22 (uv workspace auto-enabled, see ADR-003)
+  - [ ] 1.2.b `mcp-servers/mcp-fred-macro/` (same shape)
+  - [ ] 1.2.c `mcp-servers/mcp-backtest/` (same shape)
 - [ ] 1.3 DESIGN.md v0.1 起草（Claude 起草，Haichuan 填 AgentState schema）
 
 ### Stage 2 — mcp-sec-edgar 独立 repo 开源 ⬜
@@ -219,6 +219,16 @@ mcp-sec-edgar/
 - **Why**: 今天就能 push 不被 Option A（每个子目录单独 git init）的 path 问题卡住；未来 3 个 MCP server 开源时的 `subtree split` 是一次性操作，不影响主 repo 开发节奏。
 - **Risk**: 主 repo commit 里会包含 mcp-servers/ 的早期半成品代码；`subtree split` 出来的独立 repo 会包含这些"史前"commit。可以接受（开源前可以 rebase 清理）。
 
+### ADR-003 · Keep uv workspace (parent `[tool.uv.workspace]`)
+- **Date**: 2026-04-22
+- **Context**: `uv init --package mcp-sec-edgar` inside `mcp-servers/` auto-added a `[tool.uv.workspace]` block to the parent `pyproject.toml` listing the new sub-project as a member.
+- **Decision**: Keep it.
+- **Why**:
+  - Single lockfile + shared cache + faster `uv sync` during development
+  - Each sub-project's own `pyproject.toml` is already self-sufficient (standalone `[project]` with its own deps)
+  - Future `git subtree split` to produce standalone open-source repos will naturally drop the parent workspace block — sub-repos stay clean
+- **Consequence**: When adding 1.2.b and 1.2.c (fred-macro, backtest), uv will auto-append them to the workspace `members` list. That's expected and desired.
+
 ---
 
 ## ✅ Hand-write 规矩（Project 3 生效）
@@ -272,9 +282,14 @@ mcp-sec-edgar/
 | 2026-04-22 | 1 | Stage 1 进入 in_progress。决议 `mcp-servers/` 嵌在主 repo 下（ADR-001）。 |
 | 2026-04-22 10:17 | 1.1.a | ✅ `uv init --package` 成功（生成 pyproject.toml + .python-version + README.md 占位）。7 个顶层目录建好（src/ eval/ tests/ configs/ scripts/ mcp-servers/ + uv 自动包目录）。 |
 | 2026-04-22 | 1.1.b | ✅ 选 Option B 标准 src-layout。agents/graph/mcp_clients 移入 `src/quant_research_copilot/`。所有 `__init__.py` 就位（4 src + tests + eval + eval/runners + configs）。 |
+| 2026-04-22 | 1.1.c | ✅ `.gitignore` + `.env.example` created. Language switched to English from this point. |
+| 2026-04-22 | 1.1.d | ✅ `git init` + first commit + GitHub public repo + push. Main repo is now remote-tracked. |
+| 2026-04-22 | 1.2.a | ✅ `mcp-sec-edgar/` skeleton complete (13 files, 5 sub-packages). uv auto-added `[tool.uv.workspace]` to parent pyproject.toml; kept per ADR-003. |
+| 2026-04-22 | 1.2.b | ⚠ Cleanup: stray `mcp-servers/src/mcp_fred_macro/{cache,registries,resources,tools}/` created by wrong-CWD `mkdir` — removed via `rmdir` bottom-up. Glob miss (empty dirs invisible to Glob) logged as a lesson. |
+| 2026-04-22 | 1.2.b | ✅ `mcp-fred-macro/` skeleton re-created at correct path. `diff` against sec-edgar file list shows only package-name swap. Boilerplate files done: `.env.example` (7 lines), `LICENSE` (copied from sec-edgar, identical), `.github/workflows/ci.yml` (29 lines, standalone-repo style, identical for both packages). Remaining: `server.py` + `tests/test_smoke.py` (hand-write). |
 
 ---
 
 ## 🎯 下一步（由 Claude 给 → Haichuan 执行 → 回来报完成）
 
-**下一个 micro-step：1.1.b** — src/ 布局决策 + 建子模块 `__init__.py` + 空占位文件。具体命令见下一条 Claude 消息。
+**Next micro-step: 1.2.b (tail)** — Haichuan hand-writes `mcp-fred-macro/src/mcp_fred_macro/server.py` from design spec. Claude provides only: (a) FastMCP API primer, (b) what the stub must expose, (c) pointer to sec-edgar's `server.py` as a reference pattern. No code given.

@@ -1,5 +1,5 @@
 [project]
-name = "quant-research-copilot"
+name = "mcp-fred-macro"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -7,17 +7,13 @@ authors = [
     { name = "LovRanRan", email = "13812764054zhc@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "fastmcp>=3.2.4",
+]
 
 [project.scripts]
-quant-research-copilot = "quant_research_copilot:main"
+mcp-fred-macro = "mcp_fred_macro:main"
 
 [build-system]
 requires = ["uv_build>=0.11.7,<0.12.0"]
 build-backend = "uv_build"
-
-[tool.uv.workspace]
-members = [
-    "mcp-servers/mcp-sec-edgar",
-    "mcp-servers/mcp-fred-macro",
-]

@@ -7,7 +7,9 @@ authors = [
     { name = "LovRanRan", email = "13812764054zhc@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "fastmcp>=3.2.4",
+]
 
 [project.scripts]
 mcp-sec-edgar = "mcp_sec_edgar:main"

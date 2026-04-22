@@ -7,7 +7,11 @@ authors = [
     { name = "LovRanRan", email = "13812764054zhc@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "mcp-sec-edgar",
+    "mcp-fred-macro",
+    "mcp-backtest",
+]
 
 [project.scripts]
 quant-research-copilot = "quant_research_copilot:main"
@@ -20,4 +24,10 @@ build-backend = "uv_build"
 members = [
     "mcp-servers/mcp-sec-edgar",
     "mcp-servers/mcp-fred-macro",
+    "mcp-servers/mcp-backtest",
 ]
+
+[tool.uv.sources]
+mcp-sec-edgar = { workspace = true }
+mcp-fred-macro = { workspace = true }
+mcp-backtest = { workspace = true }

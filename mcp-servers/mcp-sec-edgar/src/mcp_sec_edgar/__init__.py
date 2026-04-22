@@ -1,2 +1,1 @@
-def main() -> None:
-    print("Hello from mcp-sec-edgar!")
+from .server import main   

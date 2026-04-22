@@ -1,8 +1,8 @@
-"""SEC Edgar MCP Server"""
+"""MCP Backtest Server"""
 
 from fastmcp import FastMCP
 
-mcp = FastMCP(name="mcp-sec-edgar")
+mcp = FastMCP(name="mcp-backtest")
 
 @mcp.tool
 def ping() -> dict[str, str]:

@@ -4,6 +4,7 @@ requires-python = ">=3.12"
 
 [manifest]
 members = [
+    "mcp-backtest",
     "mcp-fred-macro",
     "mcp-sec-edgar",
     "quant-research-copilot",
@@ -579,6 +580,17 @@ wheels = [
 ]
 
 [[package]]
+name = "mcp-backtest"
+version = "0.1.0"
+source = { editable = "mcp-servers/mcp-backtest" }
+dependencies = [
+    { name = "fastmcp" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "fastmcp", specifier = ">=3.2.4" }]
+
+[[package]]
 name = "mcp-fred-macro"
 version = "0.1.0"
 source = { editable = "mcp-servers/mcp-fred-macro" }
@@ -938,6 +950,18 @@ wheels = [
 name = "quant-research-copilot"
 version = "0.1.0"
 source = { editable = "." }
+dependencies = [
+    { name = "mcp-backtest" },
+    { name = "mcp-fred-macro" },
+    { name = "mcp-sec-edgar" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mcp-backtest", editable = "mcp-servers/mcp-backtest" },
+    { name = "mcp-fred-macro", editable = "mcp-servers/mcp-fred-macro" },
+    { name = "mcp-sec-edgar", editable = "mcp-servers/mcp-sec-edgar" },
+]
 
 [[package]]
 name = "referencing"

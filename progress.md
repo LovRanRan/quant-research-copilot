@@ -11,13 +11,13 @@
 | Field | Value |
 |-------|-------|
 | **Current Stage** | `Stage 1 · Scaffolding + DESIGN.md v0` |
-| **Current Sub-step** | `1.2.c — mcp-backtest skeleton` |
-| **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜ 7 / 10 micro-steps |
+| **Current Sub-step** | `1.3 — DESIGN.md v0.1 draft (Claude drafts, Haichuan fills key fields)` |
+| **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩🟩🟩🟩⬜ 9 / 10 micro-steps |
 | **Overall Progress** | 🟦⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0 / 13 stages |
 | **Blocker** | none |
-| **Last Activity** | 2026-04-22 · 1.2.b **DONE**. `mcp-fred-macro` server.py hand-written (ping stub), `__init__.py` re-export, smoke check passes — `FastMCP('mcp-fred-macro')` instance verified. Fixed editable-install corruption via `uv sync --reinstall-package`. |
-| **Working Mode** | HAND-WRITE (Claude coaches, user writes all runnable code) |
-| **Next Action** | Scaffold `mcp-servers/mcp-backtest/` — same shape as fred-macro, user runs it mostly unaided. |
+| **Last Activity** | 2026-04-22 · **Stage 1.2 closed**. All 3 MCP skeletons at parity — `FastMCP('mcp-sec-edgar')` / `FastMCP('mcp-fred-macro')` / `FastMCP('mcp-backtest')` all smoke-check green. Three subpackage trees, uv workspace aligned, LICENSE/CI/boilerplate identical across all. |
+| **Working Mode** | HAND-WRITE (Claude drafts DESIGN.md; Haichuan fills AgentState schema and tool signatures) |
+| **Next Action** | Claude proposes DESIGN.md v0.1 outline → Haichuan approves/edits scope → Claude drafts → Haichuan fills key fields + reviews. |
 
 ---
 
@@ -219,6 +219,16 @@ mcp-sec-edgar/
 - **Why**: 今天就能 push 不被 Option A（每个子目录单独 git init）的 path 问题卡住；未来 3 个 MCP server 开源时的 `subtree split` 是一次性操作，不影响主 repo 开发节奏。
 - **Risk**: 主 repo commit 里会包含 mcp-servers/ 的早期半成品代码；`subtree split` 出来的独立 repo 会包含这些"史前"commit。可以接受（开源前可以 rebase 清理）。
 
+### ADR-004 · Root project declares the 3 MCPs as workspace dependencies
+- **Date**: 2026-04-22
+- **Context**: After 1.2.c, running `uv run python -c "import mcp_sec_edgar, mcp_fred_macro, mcp_backtest; ..."` from the workspace root failed with `ModuleNotFoundError`. Root cause: `uv sync` at the root only installs the root package's deps — workspace members aren't auto-installed unless (a) the root depends on them, or (b) you pass `--all-packages`. Each individual smoke check passed because running `uv run` *inside* a member dir syncs that specific member.
+- **Decision**: Declare the 3 self-authored MCPs as `dependencies` of the root `quant-research-copilot` package, resolved via `[tool.uv.sources]` with `workspace = true`.
+- **Why**:
+  - Semantically accurate — the supervisor's runtime does require these MCPs (launched as stdio subprocesses by `langchain-mcp-adapters`); the binaries/modules must live in the same venv.
+  - `uv sync` at root "just works" for every dev, no flag-memory burden.
+  - Makes `uv run pytest` at root able to import across packages if needed (e.g. integration tests that spin up an MCP in-process).
+- **Consequence**: Root `pyproject.toml` now has 3 deps + a `[tool.uv.sources]` block. When any MCP is eventually split out via `git subtree split`, the extracted repo is unaffected (source entries only apply at the workspace root).
+
 ### ADR-003 · Keep uv workspace (parent `[tool.uv.workspace]`)
 - **Date**: 2026-04-22
 - **Context**: `uv init --package mcp-sec-edgar` inside `mcp-servers/` auto-added a `[tool.uv.workspace]` block to the parent `pyproject.toml` listing the new sub-project as a member.
@@ -288,9 +298,12 @@ mcp-sec-edgar/
 | 2026-04-22 | 1.2.b | ⚠ Cleanup: stray `mcp-servers/src/mcp_fred_macro/{cache,registries,resources,tools}/` created by wrong-CWD `mkdir` — removed via `rmdir` bottom-up. Glob miss (empty dirs invisible to Glob) logged as a lesson. |
 | 2026-04-22 | 1.2.b | ✅ `mcp-fred-macro/` skeleton re-created at correct path. `diff` against sec-edgar file list shows only package-name swap. Boilerplate files done: `.env.example` (7 lines), `LICENSE` (copied from sec-edgar, identical), `.github/workflows/ci.yml` (29 lines, standalone-repo style, identical for both packages). Remaining: `server.py` + `tests/test_smoke.py` (hand-write). |
 | 2026-04-22 | 1.2.b | ✅ **DONE**. `server.py` hand-written (docstring + `FastMCP(name=...)` + `@mcp.tool def ping() -> dict[str, str]` returning `{"status": "ok", "server": mcp.name}` + `main()` + entrypoint guard). `__init__.py` re-exports `main`. `uv add fastmcp` → fastmcp 3.2.4. Smoke check ✅ (`FastMCP('mcp-fred-macro')` instance printed). Lesson learned: editable install can get half-broken after `uv add` — recover via `uv sync --reinstall-package`. |
+| 2026-04-22 | 1.2.c | ✅ **DONE**. `mcp-backtest` scaffolded end-to-end: `uv init --package`, 4 subpackage dirs (no middleware — yfinance needs no rate-limit), LICENSE + CI copied from fred-macro (identical templates), `.env.example` commented-only (no required secrets), `server.py` + `__init__.py` written in same five-section shape as fred-macro. `uv add fastmcp` + smoke check ✅ `FastMCP('mcp-backtest')`. Workspace `members` now lists all 3 MCPs. |
+| 2026-04-22 | 1.2.a (parity) | ✅ **DONE**. `mcp-sec-edgar/server.py` + `__init__.py` rewritten to same ping-stub shape as fred-macro/backtest. Smoke check ✅ `FastMCP('mcp-sec-edgar')`. |
+| 2026-04-22 | 1.2 (final) | ⚠→✅ Triple-import test from workspace root initially failed (`ModuleNotFoundError`). Root cause: root project didn't declare MCPs as deps, so `uv sync` at root skipped them. Fix: ADR-004 — add 3 MCPs as `dependencies` + `[tool.uv.sources]` with `workspace = true`. After `uv sync`, triple import ✅ all three `main` functions printed. **Stage 1.2 fully closed.** |
 
 ---
 
 ## 🎯 下一步（由 Claude 给 → Haichuan 执行 → 回来报完成）
 
-**Next micro-step: 1.2.c** — scaffold `mcp-servers/mcp-backtest/` with the same shape as fred-macro. Differences: registries will hold a `Strategy` Protocol (not a `ResamplePolicy`); cache will be yfinance Parquet (not SEC SQLite or FRED Parquet). For 1.2.c itself, just do the skeleton — real strategy/backtest logic is Stage 4.
+**Next micro-step: 1.3** — DESIGN.md v0.1 draft. Claude proposes an outline first (sections + purpose of each), Haichuan confirms/edits scope, then Claude drafts. Haichuan hand-writes: (a) `AgentState` TypedDict fields, (b) tool signatures for the 3 self-authored MCPs. Claude drafts everything else.

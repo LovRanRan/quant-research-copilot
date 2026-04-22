@@ -1,0 +1,63 @@
+# ======================================================================
+# Project 3 · quant-research-copilot · .gitignore
+# ======================================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# --- uv / 打包 ---
+.venv/
+venv/
+env/
+build/
+dist/
+wheels/
+*.egg-info/
+*.egg
+
+# --- Testing / linting 缓存 ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# --- Notebooks ---
+.ipynb_checkpoints/
+
+# --- Env / secrets（最重要）---
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# --- 本地缓存 / 生成数据（MCP server 会产出这些） ---
+*.parquet
+*.sqlite
+*.sqlite3
+*.db
+.cache/
+data/
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- LangGraph / LangSmith ---
+.langgraph/
+langsmith_runs/
+
+# --- Logs ---
+*.log
+logs/

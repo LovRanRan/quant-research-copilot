@@ -242,16 +242,18 @@ class Constituent(TypedDict):
     name: str
     sector: str
     weight: Optional[float]
-class FillingMeta(TypeDict):
+
+class FilingMeta(TypedDict):
     accession_number: str
-  
-  
+    filed_date: date
+    form: str
+    url: Optional[str] # index page URL, not primary document
+    period_of_report: Optional[date]
 # tools
 get_index_constituents(index: str, as_of_date: date) -> List[Constituent]
     # Example call: get_index_constituents("sp500", date(2025, 1, 1)) → list of 500 dicts
 
 search_filings(ticker: str, form_type: str, limit: int) -> List[FilingMeta]
-    # FILL IN: FilingMeta = {"accession_number": str, "filed_date": date, "form": str, "url": str}
     # form_type ∈ {"10-K", "10-Q", "8-K", ...}
 
 get_filing_section(accession_number: str, section: str) -> str

@@ -2,7 +2,56 @@
 
 > 单文件进度板 — Dashboard + Roadmap + Logs + Repo 蓝图 + Hand-write 规矩 + Tool Inventory
 > 维护方式：每完成一个 sub-step，在 Dashboard 更新 Current，在 Logs 追加一行
-> Owner: Haichuan · Start: 2026-04-22 · Target: 2026-05-14 (Week 5–8)
+> Owner: Haichuan · Start: 2026-04-22 · Reference window: Week 5–8（**仅参考，不绑日期**，见 Core Principle #2）
+
+---
+
+## 🔒 Core Principles（不可让步 · 写在最前面）
+
+1. **Resume-grade ownership — 所有 production code 由 Haichuan 亲手写。**
+   这个项目会写进简历，必须经得起"你这段代码自己写的吗"的追问。覆盖范围：Python（FastMCP / LangGraph / tool / adapter / pytest）、YAML / Dockerfile、`pyproject.toml` / `.env.example` / `.gitignore`。
+   Claude 的角色 = traffic-light review（🟢/🟡/🔴）+ 方向提示 + 概念解释。**只有**在 Haichuan 自己尝试过、能精准描述卡点、且持续超过 15 min 没出口时，才允许 Claude 给最小代码示例（< 10 行）+ 解释为什么这么写。能自己想出来的就**不要**先看答案。
+
+2. **进度按"实际完成"推进，不按日历推进。**
+   Roadmap 里的 Week 5–8 仅供参照，**不**作为压力或截止线。下一个 sub-step 的开工条件 = 上一个 sub-step 真正 done。一个 sub-step "done" 的判定 = ① 代码/文档落地 ② 跑通验证（smoke / pytest / MCP Inspector / import check 等场景对应的最小验证）③ Logs 里有一行记录（含决策点和 lesson）。三者缺一不算 done，不进入下一步。
+
+---
+
+## 🚪 New Chat Pickup Protocol（每次开新对话先看这里）
+
+> 目标：新 Claude 实例 3 分钟内恢复全部上下文，**不需要**任何"下一步 checklist 文档"。
+
+按以下顺序读 `progress.md`：
+
+1. **Core Principles**（上一节）— 两条不可让步的规则。
+2. **Dashboard**（下一节）— 当前 stage / sub-step / blocker / next action。**这是"现在状态"的唯一事实源。**
+3. **Logs 最近 3–5 行** — 最近发生了什么、做了什么决策、踩了什么坑。
+4. **当前 Stage 的 Roadmap 复选框** — sub-step 粒度上还差什么。
+5. **（可选）被引用的 ADR** — 如果 Dashboard 或最近 Logs 引用了 ADR-xxx，去看那条决策的完整 context。
+
+姊妹文档：`DESIGN.md`（系统设计 · 当前 v0.1 FILL IN pass 进行中）、`project3_mapping.md`（MCP 概念映射 · 已冻结）。
+
+⚠ **不要去找任何"下一步 / pickup checklist"独立小节** — 这类文档曾经存在（已删除），因为它们一旦不和 Logs 同步就会变成毒源。所有"下一步"信息**只在 Dashboard 的 `Next Action` 字段**。
+
+---
+
+## 🔄 Update Protocol（每次有进度变化必走 · 顺序不可乱）
+
+每次完成一个动作（无论大小），按以下顺序更新本文件。少一步 = 没更新完，下一个 chat 可能误判。
+
+1. **Logs 末尾追加 1 行**（先做 — 历史不可篡改）
+   格式：`日期 | stage | ✅/⚠/⏸/📘 内容（含做了什么 + 验证方式 + lesson 或决策点）`。
+2. **Dashboard 同步**（再做 — 反映新现在）
+   - `Current Sub-step` 改成新的 in-progress
+   - `Stage X Progress` 进度块 / `Overall Progress` 进度块按需重画
+   - `Last Activity` 一句话总结刚做完的事（带日期）
+   - `Next Action` 写下一个**具体可执行**的动作（不是"推进 Stage 2"，而是"hand-write `FilingMeta` TypedDict at DESIGN.md §5.1"）
+   - `Blocker` 如有变化更新
+3. **Roadmap** — 关闭的 sub-step 复选框 `[ ]` → `[x]` + 完成日期
+4. **Tool Inventory** — MCP server 的 tool / resource 状态变化时更新 `状态` 列
+5. **ADR** — 如本次涉及架构决策，新增 ADR-NNN（不要塞进 Logs，Logs 只放一行指针）
+
+> 黄金法则：**Logs append-only · Dashboard 永远是 now 的快照** · 两者必须同一次更新提交。
 
 ---
 
@@ -14,10 +63,10 @@
 | **Current Sub-step** | `1.3 — DESIGN.md v0.1 FILL IN pass (in progress · 1 / 7 TypedDicts done)` |
 | **Stage 1 Progress** | 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩 10 / 10 micro-steps (Claude draft portion) |
 | **Overall Progress** | 🟦🟦⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 1 / 13 stages (Stage 1 pending FILL IN completion) |
-| **Blocker** | none — user paused mid-FILL-IN, will resume in a new chat |
-| **Last Activity** | 2026-04-22 · FILL IN pass kicked off. Haichuan reviewed DESIGN.md v0.1 and chose Path B (fill in now). Claude gave `Constituent` worked example; user copied verbatim into Section 5.1 — ✅ 🟢. Module-level-vs-function-level TypedDict placement rule established (always module-level). |
-| **Working Mode** | HAND-WRITE (review + fill in) |
-| **Next Action** | Resume in new chat. Next hand-write target: `FilingMeta` TypedDict (first true hand-write of Section 5). See "Next micro-step" at bottom for the full pickup checklist. |
+| **Blocker** | none |
+| **Last Activity** | 2026-04-24 · `progress.md` meta-overhaul — Core Principles + New Chat Pickup Protocol + Update Protocol 写入文件顶部；删除底部 stale 的"Next micro-step"段；Logs 加两条 meta 更新。**未涉及任何 DESIGN.md / 代码改动。** |
+| **Working Mode** | HAND-WRITE · resume-grade（review + 方向提示，code 全部 Haichuan 写）｜进度：完成驱动，非日历驱动 |
+| **Next Action** | **(1)** 清理 `DESIGN.md` ~line 247 那条 stale 注释 `# FILL IN: Constituent = TypedDict(...)` — `Constituent` 已在上方 module-level 定义，此行冗余（保留 `# Example call:` 与 `# form_type ∈ {...}` 这类纯文档注释）。 **(2)** Hand-write `FilingMeta` TypedDict at DESIGN.md §5.1（`search_filings` 上方），module-level，是 FILL IN pass 第一个真正的 hand-write。提示：先回答"`search_filings` 的 consumer 拿到每条 filing 要做什么（view / cite / filter / fetch sections）"，再列字段 + 一句话 reasoning，最后标注 `Optional` / `Literal` 取舍。完成后贴给 Claude 拿 🟢/🟡/🔴 review。 |
 
 ---
 
@@ -241,16 +290,18 @@ mcp-sec-edgar/
 
 ---
 
-## ✅ Hand-write 规矩（Project 3 生效）
+## ✅ Hand-write 规矩（Project 3 生效 · 与 Core Principle #1 联动）
+
+> Resume-grade reminder：所有"production code"列必须能在面试时一行行讲清楚为什么这么写。Claude 起草的内容（DESIGN.md / README）是辅助理解工具，不是最终交付物，关键 schema / 签名仍由 Haichuan 亲手填。
 
 | 类型 | 谁来写 |
 |------|--------|
-| Python 代码（FastMCP / LangGraph / tool / adapter） | **Haichuan** |
-| 测试代码（pytest） | **Haichuan** |
-| YAML / Dockerfile / Docker Compose | **Haichuan** |
+| Python 代码（FastMCP / LangGraph / tool / adapter） | **Haichuan**（resume code） |
+| 测试代码（pytest） | **Haichuan**（resume code） |
+| YAML / Dockerfile / Docker Compose | **Haichuan**（resume code） |
 | pyproject.toml / .env.example / .gitignore | **Haichuan**（Claude 给结构清单） |
 | 目录 mkdir/touch 命令 | **Haichuan** 执行（Claude 给蓝图） |
-| DESIGN.md / README / 博客草稿 | **Claude 起草**，Haichuan review + 关键字段（AgentState schema / tool 签名）自己填 |
+| DESIGN.md / README / 博客草稿 | **Claude 起草**，Haichuan review + 关键字段（AgentState schema / tool 签名 / TypedDict）自己填 |
 | eval 任务标注 / baseline 数据 | **Haichuan** |
 | 架构图 Mermaid | **Claude 起草**，Haichuan 改 |
 
@@ -263,6 +314,12 @@ mcp-sec-edgar/
 - "帮我写 xxx 这个 tool"
 - "给我整个 yyy 的完整代码"
 - "我不知道怎么开始，你写个例子"
+
+**触发"给答案"的最小条件**（必须同时满足）：
+1. Haichuan 已经动手尝试过（screenshot / 贴出错误代码 / 描述思路）
+2. 卡点描述精准（不是"不知道怎么写"，而是"我想用 X 做 Y，但 Z 报错 / 不通"）
+3. 持续 > 15 min 真的没出口
+满足后 Claude 给 < 10 行最小修复 + 解释。其他场景一律 traffic-light + 方向。
 
 ---
 
@@ -306,32 +363,7 @@ mcp-sec-edgar/
 | 2026-04-22 | 1.3 | ✅ **Constituent TypedDict added** to Section 5.1. Fields: `ticker: str / name: str / sector: str / weight: Optional[float]`. `weight` is Optional because S&P 500 publishes weights but Russell 1000 may not — future-proofing the IndexRegistry. This was a worked example from Claude, copied verbatim; pattern-calibration, not a true hand-write. |
 | 2026-04-22 | 1.3 | 📘 **Lesson established · TypedDict placement**. Rule: TypedDicts always written at module top-level (not inside functions). Reasons: (1) reusable across tools/resources/tests, (2) only module-top types are visible to Pyright/mypy, (3) class definitions belong to a module's static skeleton. Section 5.1 currently follows this pattern — keep it consistent across all 3 MCP sections. |
 | 2026-04-22 | 1.3 | ⏸ **Session paused.** User continuing in a new chat. |
+| 2026-04-24 | — | 📌 **Core Principles 写入 progress.md 顶部。** ① Resume-grade ownership：所有 production code 必须 Haichuan 亲手写，Claude 仅 review + 方向，触发"给答案"需同时满足 3 个最小条件。② 进度按"实际完成"推进，不按日历：Roadmap 的 Week 5–8 仅参考；sub-step done = 代码 + 验证 + Logs 三项齐备。Hand-write 规矩同步标记 resume code。 |
+| 2026-04-24 | — | 📌 **新增 New Chat Pickup Protocol + Update Protocol（meta 协议）。** Pickup：新 chat 按 Core Principles → Dashboard → Logs 最近 3–5 行 → 当前 Stage Roadmap → ADR 顺序读，3 分钟恢复上下文。Update：每次进度变更先 append Log 再回头同步 Dashboard / Roadmap / Tool Inventory / ADR，黄金法则"Logs append-only · Dashboard 永远是 now 快照"。**删除底部 stale 的"Next micro-step pickup checklist"整段** — 该独立 checklist 与 Logs 不同步即变毒源；今后所有"下一步"信息只在 Dashboard `Next Action`。 |
 
----
-
-## 🎯 Next micro-step — pickup checklist for the new chat
-
-**Where we left off:** Section 5.1 of `DESIGN.md` has `Constituent` fully defined (as a module-level TypedDict). This was a worked example. The real hand-write work starts with `FilingMeta`.
-
-**Immediate checklist (in order):**
-
-1. **Clean up the stale `# FILL IN:` comment** under `get_index_constituents` (line ~247 of DESIGN.md). The `# FILL IN: Constituent = TypedDict(...)` line is now redundant because the class is defined above. Keep the `# Example call:` and `# form_type ∈ {...}` comments — they're documentation, not FILL IN markers.
-
-2. **Hand-write `FilingMeta`** (Section 5.1, above `search_filings`). First true hand-write of the FILL IN pass. Four-step process:
-   - Q: what does a consumer of `search_filings` need to do with each filing? (view, cite, filter, fetch sections)
-   - Candidate fields + 1-sentence reasoning each
-   - Write the TypedDict (module-level, like `Constituent`)
-   - Annotate trade-offs: `Optional` where? `Literal` where?
-   - Hint pool (covered in the final pre-pause message): `accession_number`, `filed_date: date`, `form: str` vs `Literal[...]`, consider adding `cik` / `company_name` / `period_of_report`.
-
-3. **Hand-write the section enum** for `get_filing_section`. Candidates listed in existing comment: `item_1_business, item_1a_risk, item_7_mdna, item_8_financials`. Decide: `str` (flexible) vs `Literal[...]` (strict). Probably a top-level `FilingSection = Literal[...]` alias.
-
-4. **Move to Section 5.2 mcp-fred-macro:** hand-write `SeriesMeta` TypedDict, decide return type for `get_series` (list-of-tuples vs DataFrame — remember: JSON-safe matters for MCP stdio), `align_series` freq enum + `ResamplePolicy` policy values.
-
-5. **Move to Section 5.3 mcp-backtest:** hand-write `BacktestResult` (richest of all — `run_id / sharpe / max_dd / cagr / yearly_pnl: List[float]` at minimum).
-
-6. **Fill in Section 3 AgentState concrete types:** replace the three `Optional[Dict[str, Any]]` placeholders with concrete TypedDicts now that MCP return types are defined (e.g. `backtest_result: Optional[BacktestResult]`).
-
-7. **Close Stage 1** — commit DESIGN.md + progress.md, move to Stage 2 (mcp-sec-edgar real implementation).
-
-**For Claude (new chat):** User is in HAND-WRITE mode. Do not write TypedDicts for them — they already got one worked example (`Constituent`). Review their `FilingMeta` with 🟢 / 🟡 / 🔴, give direction only. 🔴 (minimal code fix) only if they're stuck >15 min and describe the block precisely.
+*— end of file · 不要在这之后添加"下一步 checklist"。下一步只写在 Dashboard 的 `Next Action` 字段。*

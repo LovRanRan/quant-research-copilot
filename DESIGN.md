@@ -242,6 +242,10 @@ class Constituent(TypedDict):
     name: str
     sector: str
     weight: Optional[float]
+class FillingMeta(TypeDict):
+    accession_number: str
+  
+  
 # tools
 get_index_constituents(index: str, as_of_date: date) -> List[Constituent]
     # Example call: get_index_constituents("sp500", date(2025, 1, 1)) → list of 500 dicts

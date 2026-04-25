@@ -78,10 +78,10 @@
   - [x] 1.1.b Option B · 标准 src-layout，所有 `__init__.py` 就位 ✅ 2026-04-22
   - [x] 1.1.c `.gitignore` + `.env.example` ✅ 2026-04-22
   - [x] 1.1.d `git init` + GitHub public repo + first push ✅ 2026-04-22
-- [ ] 1.2 mcp-servers/ subdirs + 3 MCP skeletons
+- [x] 1.2 mcp-servers/ subdirs + 3 MCP skeletons ✅ 2026-04-22 (triple-import verified per ADR-004)
   - [x] 1.2.a `mcp-servers/mcp-sec-edgar/` ✅ 2026-04-22 (uv workspace auto-enabled, see ADR-003)
-  - [ ] 1.2.b `mcp-servers/mcp-fred-macro/` (same shape)
-  - [ ] 1.2.c `mcp-servers/mcp-backtest/` (same shape)
+  - [x] 1.2.b `mcp-servers/mcp-fred-macro/` ✅ 2026-04-22 (same shape)
+  - [x] 1.2.c `mcp-servers/mcp-backtest/` ✅ 2026-04-22 (4 subpackages — no middleware, yfinance needs no rate-limit)
 - [ ] 1.3 DESIGN.md v0.1 起草（Claude 起草，Haichuan 填 AgentState schema）
 
 ### Stage 2 — mcp-sec-edgar 独立 repo 开源 ⬜
@@ -365,5 +365,6 @@ mcp-sec-edgar/
 | 2026-04-22 | 1.3 | ⏸ **Session paused.** User continuing in a new chat. |
 | 2026-04-24 | — | 📌 **Core Principles 写入 progress.md 顶部。** ① Resume-grade ownership：所有 production code 必须 Haichuan 亲手写，Claude 仅 review + 方向，触发"给答案"需同时满足 3 个最小条件。② 进度按"实际完成"推进，不按日历：Roadmap 的 Week 5–8 仅参考；sub-step done = 代码 + 验证 + Logs 三项齐备。Hand-write 规矩同步标记 resume code。 |
 | 2026-04-24 | — | 📌 **新增 New Chat Pickup Protocol + Update Protocol（meta 协议）。** Pickup：新 chat 按 Core Principles → Dashboard → Logs 最近 3–5 行 → 当前 Stage Roadmap → ADR 顺序读，3 分钟恢复上下文。Update：每次进度变更先 append Log 再回头同步 Dashboard / Roadmap / Tool Inventory / ADR，黄金法则"Logs append-only · Dashboard 永远是 now 快照"。**删除底部 stale 的"Next micro-step pickup checklist"整段** — 该独立 checklist 与 Logs 不同步即变毒源；今后所有"下一步"信息只在 Dashboard `Next Action`。 |
+| 2026-04-24 | 1.2 | 🔧 **Roadmap 复选框漂移修复。** 三方核对（磁盘文件 + Logs + Roadmap）发现 1.2.b / 1.2.c 实际早在 2026-04-22 完成（Logs 与磁盘一致），但 Roadmap 复选框遗留 `[ ]`。这是上一个 chat 关闭 sub-step 时没走完 Update Protocol 第 3 步留下的漂移 — 也是为何需要协议本身。已补勾 1.2 / 1.2.b / 1.2.c 三个框 + 加完成日期。**未涉及任何代码或 DESIGN.md 改动。** |
 
 *— end of file · 不要在这之后添加"下一步 checklist"。下一步只写在 Dashboard 的 `Next Action` 字段。*
